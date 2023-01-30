@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Data.interfaces;
+using Shop.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Controllers
 {
-    public class CarsController: Controller
+    public class CarsController : Controller
     {
         private readonly IAllCars _allCars;
         private readonly ICarsCategory _allCategories;
@@ -20,8 +21,11 @@ namespace Shop.Controllers
 
         public ViewResult List()
         {
-            var cars = _allCars.Cars;
-            return View(cars);
+            ViewBag.Title = "Sprzedaż samochodów";
+            CarsListViewModel obj = new CarsListViewModel();
+            obj.allCars = _allCars.Cars;
+            obj.currCategory = "Samochody";
+            return View(obj);
         }
     }
 }

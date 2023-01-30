@@ -1,15 +1,16 @@
-﻿
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>List</title>
-</head>
-<body>
-</body>
-</html>
+﻿<h1>Wszysktie pojazdy</h1>
+<h3>@Model.currCategory</h3>
+<div class="row mt-5 mb-2">
+    @{
+        foreach (var car in Model.allCars)
+        {
+            <div class="col-lg-4">
+                <img class="img-thumbnail" src="@car.img" alt="@car.name" />
+                <h2>@car.name</h2>
+                <p>@car.shortDesc</p>
+                <p>Cena: @car.price.ToString("c")</p>
+                <p><a class="btn btn-warning" href="#">Więcej informacji</a></p>
+            </div>
+        }
+    }
+</div>
