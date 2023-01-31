@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Data.interfaces;
+using Shop.Data.Models;
 using Shop.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Controllers
 {
-    public class CarsController : Controller
+    public class CarsController: Controller
     {
         private readonly IAllCars _allCars;
         private readonly ICarsCategory _allCategories;
@@ -19,13 +20,42 @@ namespace Shop.Controllers
             _allCategories = iCarsCat;
         }
 
-        public ViewResult List()
+
+        [Route("Cars/List")]
+        [Route("Cars/List/{category}")]
+        public ViewResult List(string category)
         {
+            string _category = category;
+            IEnumerable<Car> cars = null;
+            string currCategory = "";
+
+            if (string.IsNullOrEmpty(category))
+            {
+                cars = _allCars.Cars.OrderBy(i => i.id);
+            }
+            else
+            {
+                if (string.Equals("electro", category, StringComparison.OrdinalIgnoreCase))
+                {
+                    cars = _allCars.Cars.Where(i => i.category.categoryName.Equals("Electric cars")).OrderBy(i => i.id);
+                    currCategory = "Electric cars";
+                }
+                else if (string.Equals("fuel", category, StringComparison.OrdinalIgnoreCase))
+                {
+                    cars = _allCars.Cars.Where(i => i.category.categoryName.Equals("Classic cars")).OrderBy(i => i.id);
+                    currCategory = "Classic cars";
+                }
+
+                 
+            }
+            var carObj = new CarsListViewModel
+            {
+                allCars = cars,
+                currCategory = currCategory
+            };
+
             ViewBag.Title = "Sprzedaż samochodów";
-            CarsListViewModel obj = new CarsListViewModel();
-            obj.allCars = _allCars.Cars;
-            obj.currCategory = "Samochody";
-            return View(obj);
+            return View(carObj);
         }
     }
 }

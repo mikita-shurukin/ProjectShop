@@ -1,22 +1,25 @@
-﻿using Shop.Data.interfaces;
-using Shop.Data.mocs;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Shop.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Shop.Data.mocks
+namespace Shop.Data
 {
-    public class MockCars : IAllCars
+    public class DBObjects
     {
-        private readonly ICarsCategory _categoryCars = new MockCategory();
-        public IEnumerable<Car> Cars
+        public static void Initial(AppDBContent content)
         {
-            get
+            if (!content.Category.Any())
             {
-                return new List<Car>
-                {
+                content.Category.AddRange(Categories.Select(c => c.Value));
+            }
+
+            if (!content.Car.Any())
+            {
+                content.AddRange(
                     new Car
                     {
                         name = "Tesla Model S",
@@ -26,7 +29,7 @@ namespace Shop.Data.mocks
                         price = 340000,
                         isFavourite = true,
                         avaible = true,
-                        category = _categoryCars.AllCatigories.First()
+                        category = Categories["Electric cars"]
                     },
                     new Car
                     {
@@ -37,7 +40,7 @@ namespace Shop.Data.mocks
                         price = 485000,
                         isFavourite = true,
                         avaible = true,
-                        category = _categoryCars.AllCatigories.Last()
+                        category = Categories["Classic cars"]
                     },
                     new Car
                     {
@@ -48,7 +51,7 @@ namespace Shop.Data.mocks
                         price = 199000,
                         isFavourite = true,
                         avaible = true,
-                        category = _categoryCars.AllCatigories.Last()
+                        category = Categories["Classic cars"]
                     },
                     new Car
                     {
@@ -59,7 +62,7 @@ namespace Shop.Data.mocks
                         price = 240000,
                         isFavourite = true,
                         avaible = true,
-                        category = _categoryCars.AllCatigories.Last()
+                        category = Categories["Classic cars"]
                     },
                     new Car
                     {
@@ -70,7 +73,7 @@ namespace Shop.Data.mocks
                         price = 230000,
                         isFavourite = true,
                         avaible = true,
-                        category = _categoryCars.AllCatigories.Last()
+                        category = Categories["Classic cars"]
                     },
                     new Car
                     {
@@ -81,7 +84,7 @@ namespace Shop.Data.mocks
                         price = 250000,
                         isFavourite = true,
                         avaible = true,
-                        category = _categoryCars.AllCatigories.Last()
+                        category = Categories["Classic cars"]
                     },
                     new Car
                     {
@@ -92,7 +95,7 @@ namespace Shop.Data.mocks
                         price = 463000,
                         isFavourite = true,
                         avaible = true,
-                        category = _categoryCars.AllCatigories.Last()
+                        category = Categories["Electric cars"]
                     },
                     new Car
                     {
@@ -103,7 +106,7 @@ namespace Shop.Data.mocks
                         price = 653000,
                         isFavourite = true,
                         avaible = true,
-                        category = _categoryCars.AllCatigories.Last()
+                        category = Categories["Electric cars"]
                     },
                     new Car
                     {
@@ -114,16 +117,38 @@ namespace Shop.Data.mocks
                         price = 153000,
                         isFavourite = true,
                         avaible = true,
-                        category = _categoryCars.AllCatigories.Last()
+                        category = Categories["Classic cars"]
                     }
-                };
+                );
             }
-        }
-        public IEnumerable<Car> getFavCars { get ; set; }
 
-        public Car getObjectCar(int carID)
+            content.SaveChanges();
+        }
+
+        public static Dictionary<string, Category> category;
+
+        public static Dictionary<string, Category> Categories
         {
-            throw new NotImplementedException();
+            get
+            {
+                if(category == null)
+                {
+                    var list = new Category[]
+                    {
+                        new Category{categoryName = "Electric cars", desc = "Modern cars"},
+                        new Category{categoryName = "Classic cars", desc = "Internal combustion engine vehicles" }
+                    };
+
+                    category = new Dictionary<string, Category>();
+
+                    foreach (Category el in list)
+                    {
+                        category.Add(el.categoryName, el);
+                    }
+                }
+
+                return category;
+            }
         }
     }
 }

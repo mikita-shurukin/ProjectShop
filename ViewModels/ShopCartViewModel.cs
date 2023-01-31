@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shop.ViewModels
 {
-    public class CarsListViewModel
+    public class ShopCartViewModel
     {
-        public IEnumerable<Car> allCars { get; set; }
+        public ShopCart shopCart { get; set; }
 
-        public string currCategory {get; set;}
     }
 }
